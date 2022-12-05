@@ -26,7 +26,7 @@ try {
 const ADMIN_CORS = process.env.ADMIN_CORS || "http://localhost:7000,http://localhost:7001";
 
 // CORS to avoid issues when consuming Medusa from a client
-const STORE_CORS = process.env.STORE_CORS || "http://localhost:8000";
+const STORE_CORS = process.env.STORE_CORS || "http://localhost:8000,*";
 
 // Database URL (here we use a local database called medusa-development)
 const DATABASE_URL =
@@ -43,6 +43,34 @@ const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET || "";
 const plugins = [
   `medusa-fulfillment-manual`,
   `medusa-payment-manual`,
+  {
+    resolve: `medusa-plugin-algolia`,
+    options: {
+      application_id: process.env.ALGOLIA_APP_ID,
+      admin_api_key: process.env.ALGOLIA_ADMIN_API_KEY,
+      settings: {
+        products: {
+          searchableAttributes: [
+            "title",
+            "description",
+          ],
+          attributesToRetrieve: [
+            "id",
+            "title",
+            "description",
+            "handle",
+            "thumbnail",
+            "variants",
+            "variant_sku",
+            "options",
+            "collection_title",
+            "collection_handle",
+            "images",
+          ],
+        },
+      },
+    },
+  },
   // Uncomment to add Stripe support.
   // You can create a Stripe account via: https://stripe.com
   // {
